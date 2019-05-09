@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<link rel="stylesheet" href="reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/white.css">
+    <meta charset="utf-8">
+    <title>Pfadfindung für einen autonomen Rollstuhl</title>
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section data-background-color="#4d7e65">
+          <h1>Pfadfindung für einen autonomen Rollstuhl</h1>
+          Master Projektarbeit von <i>Marc Lasch</i> <br />
+          Betreuung <i>Prof. Dr.-Ing. Gerhard Schäfer</i>
+        </section>
+        <section data-markdown>
+        	<textarea data-template>
+            ### Übersicht
+
+             * Autonomer Rollstuhl
+             * Problembeschreibung Pfadfindung
+             * Lösungsansätze
+             * Implementierung
+             * Demo
+          </textarea>
+        </section>
+        <section>
+          <h3>Test</h3>
+          test page
+        </section>
+        <section>
+          <section>
+            <h3>Beispiel Formeln</h3>
+            \[\begin{aligned}
+            \dot{x} &amp; = \sigma(y-x) \\
+            \dot{y} &amp; = \rho x - y - xz \\
+            \dot{z} &amp; = -\beta z + xy
+            \end{aligned} \]
+          </section>
+          <section>
+            <h3>Minkowsky Summe konvexer Polygone</h3>
+            <div id="canvas-minkowsky"></div>
+          </section>
+
+          <section>
+            <h3>Triangulation nicht konvexer Polygone</h3>
+            <div id="canvas-triangulation"></div>
+          </section>
+        </section>
+
+			</div>
+		</div>
+    <script src="reveal.js/js/reveal.js"></script>
+    <script>
+      Reveal.initialize({ slideNumber: true,
+        hash: true,
+        dependencies: [
+      		// Interpret Markdown in <section> elements
+      		{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      		{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+      		// Syntax highlight for <code> elements
+      		{ src: 'reveal.js/plugin/highlight/highlight.js', async: true },
+
+      		// Zoom in and out with Alt+click
+      		{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+
+      		// Speaker notes
+      		{ src: 'reveal.js/plugin/notes/notes.js', async: true },
+
+      		// MathJax
+      		{ src: 'reveal.js/plugin/math/math.js', async: true },
+
+          // p5 drawing
+          { src: 'js/p5.min.js', async: true},
+          { src: 'js/polygon.js', async: true},
+          { src: 'js/polygon-cspace.js', async: true},
+          { src: 'js/polygon-triangulation.js', async: true}
+      	]
+      });
+    </script>
+	</body>
+</html>
