@@ -3,6 +3,7 @@
   <head>
 		<link rel="stylesheet" href="reveal.js/css/reveal.css">
 		<link rel="stylesheet" href="reveal.js/css/theme/white.css">
+    <link rel="stylesheet" href="reveal.js/plugin/title-footer/title-footer.css">
     <meta charset="utf-8">
     <title>Pfadfindung für einen autonomen Rollstuhl</title>
 	</head>
@@ -10,52 +11,353 @@
 
 		<div class="reveal">
 			<div class="slides">
-				<section data-background-color="#4d7e65">
-          <h1>Pfadfindung für einen autonomen Rollstuhl</h1>
-          Master Projektarbeit von <i>Marc Lasch</i> <br />
-          Betreuung <i>Prof. Dr.-Ing. Gerhard Schäfer</i>
+				<section data-background-color="#4d7e65" data-state="no-title-footer" style="height:80%;">
+          <h1>Wegeplanung für ein autonomes indoor Personenbeförderungssystem</h1>
+          <div style="margin-top:10vmin;"></div>
+          <p style="font-size:5vmin;">Master Projektarbeit von <i>Marc Lasch</i> <br />
+          Betreuer <i>Prof. Dr.-Ing. Gerhard Schäfer</i></p>
+          <div style="height: 20vmin"></div>
+          <img src="images/Hska_logo.svg" style="width:40vmin;">
         </section>
-        <section data-markdown>
-        	<textarea data-template>
-            ### Übersicht
+        <section data-background-image="images/rollstuhl.jpeg" style="height:auto;">
+          <div style="width:40vmax; background:rgba(0,0,0,0.3); margin:auto; color:#e4ff00; border-radius: 30px; padding:30px">
+            <h3 style="color:inherit;">Übersicht</h3>
+            <ul style="font-size:6vmin; list-style-type: '&#11146; ';">
+              <li>Problembeschreibung</li>
+              <li>Lösungsansätze</li>
+              <li>Implementierung</li>
+              <li>Demonstration</li>
+            </ul>
+          </div>
+        </section>
 
-             * Autonomer Rollstuhl
-             * Problembeschreibung Pfadfindung
-             * Lösungsansätze
-             * Implementierung
-             * Demo
-          </textarea>
+        <section>
+          <h3>Problembeschreibung</h3>
+          <div style="width:100%; display: flex; font-size:5vmin;">
+            <div id="left">
+              <ul>
+                <li>Voraussetzung
+                  <ul style="list-style-type: '&#8594; ';">
+                    <li>Position im Raum liegt vor</li>
+                    <li>Feste Hindernisse im Raum sind bekannt <br /> &#x21E8; Gebäudeplan</li>
+                    <li>Sensoren erkennen dynamische Hindernisse</li>
+                  </ul>
+                </li>
+              </ul>
+              <div id="left" style="margin-top:5vmin;"></div>
+              <ul class="fragment" data-fragment-index="2">
+                <li>Zielbeschreibung
+                  <ul style="list-style-type: '&#8594; ';">
+                    <li>Wegeplanung (path planning, motion planning)</li>
+                    <li>Visualisierung (browser-basiert)</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div id="right">
+              <img src='images/rollstuhl2.jpeg' alt='Rollstuhl' style="height:80vmin; margin:auto;">
+            </div>
+          </div>
+
         </section>
         <section>
-          <h3>Test</h3>
-          test page
+          <h3>Problembeschreibung: Black-Box-Modell</h3>
+          <img src="images/blackboxmodel.svg" style="height: 100vmin;">
         </section>
         <section>
-          <section>
-            <h3>Beispiel Formeln</h3>
-            \[\begin{aligned}
-            \dot{x} &amp; = \sigma(y-x) \\
-            \dot{y} &amp; = \rho x - y - xz \\
-            \dot{z} &amp; = -\beta z + xy
-            \end{aligned} \]
-          </section>
-          <section>
-            <h3>Minkowsky Summe konvexer Polygone</h3>
-            <div id="canvas-minkowsky"></div>
-          </section>
-
-          <section>
-            <h3>Triangulation nicht konvexer Polygone</h3>
-            <div id="canvas-triangulation"></div>
-          </section>
+          <h3>Problembeschreibung: Black-Box-Modell</h3>
+          <img src="images/blackboxmodel2.svg" style="height: 100vmin;">
+        </section>
+        <section>
+          <h3>Darstellung des Rollstuhls</h3>
+          <div id="left" style="margin-top:10vmin; font-size:5vmin;">
+          <ul>
+            <li>Rollstuhl wird als Kreis betrachtet</li>
+            <ul style="list-style-type: '&#8594; ';">
+              <li>Rollstuhl wird als Polygon abstrahiert</li>
+              <li>konstruktion des kleinsten Kreises um den Rollstuhl</li>
+              <li>Kollisionen sind unabhängig von der Drehung</li>
+            </ul>
+          </ul>
+          </div>
+          <div id="right" style="margin-top:5vmin; font-size:4vmin;">
+            <img src="images/robot.gif" style="width:80vmin;">
+            <div style="font-size:3vmin;">Repräsentation des Rollstuhls, Dimensionen in m</div>
+          </div>
         </section>
 
+        <section>
+          <h3>1. Ansatz</h3>
+            <div style="height:5vmin;"></div>
+            <div id="left">
+            <ul style="font-size:4vmin;">
+              <li>Gruppe der sog. <i>bug algorithms</i></li>
+              <li>Finden nicht den idealen/kürzesten Weg</li>
+              <li>Lassen sich auch auf unbekanntes Terrain anwenden</li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>Benötigen nur lokales Wissen</li>
+                <li>Wurden für Tastsensoren entwickelt</li>
+              </ul>
+            </ul>
+          </div>
+          <div id="right">
+            <img src="images/polygons_bug2.svg" style="height:80vmin; margin-top:0;">
+            <div style="font-size:2.5vmin;"><b>BUG2</b> [V. Lumelsky and A. Stepanov. Path planning strategies for point mobile
+automaton moving amidst unknown obstacles of arbitrary shape.]</div>
+          </div>
+        </section>
+
+        <section>
+            <h3>2. Ansatz</h3>
+            <div>
+              <ul style="font-size:5vmin;">
+                <li>Problem aus der Robotik / Spieleprogrammierung</li>
+                <ul style="list-style-type: '&#8594; ';">
+                  <li>Aktionsradius eines Roboterarms</li>
+                  <li>Bewegung einer Spielfigur</li>
+                </ul>
+              </ul>
+            </div>
+            <div id="left" style="margin-top:5vmin; font-size:4vmin;">
+              Beispiel: Age of Empires 2
+
+              <img src="images/aoe2.png" style="width:80vmin;">
+            </div>
+            <div id="right" style="margin-top:10vmin; font-size:5vmin;">
+              <ul>
+                <li>Karte als Gitternetz abgespeichert</li>
+                <li>Graphen Algorithmen anwendbar</li>
+                <ul style="list-style-type: '&#8594; ';">
+                  <li>Dijkstra</li>
+                  <li>A*</li>
+                </ul>
+                <li>Hier: Knoten im Graph haben gleichen Abstand, Kantenkosten</li>
+              </ul>
+            </div>
+        </section>
+
+        <section>
+            <h3>2. Ansatz</h3>
+
+            <div id="left" style="font-size:5vmin; margin-top:5vmin;">
+              <div>Arbeitsraum</div>
+              <img src="images/polygons_work.png" style="height:80vmin;" />
+
+            </div>
+            <div id="right" class="fragment" style="font-size:5vmin; margin-top:5vmin;">
+              <div>Arbeitsraum + Abstand</div>
+              <img src="images/polygons_cspace.png" style="height:80vmin;" />
+            </div>
+        </section>
+        <section>
+          <h3>2. Ansatz</h3>
+          <div>
+          <ul>
+            <li style="list-style-type: '&#8594; '; font-size:4vmin;">
+              Hindernisse werden aus dem Gitter ausgeschnitten:
+            </li>
+          </ul>
+        </div>
+          <div id="left">
+            <img src="images/polygons_cspace_grey.png" style="height:65vmin; margin-top:12vmin;" />
+          </div>
+          <div id="right">
+            <img src="images/cspace_grid.png" style="height:80vmin;" />
+          </div>
+        </section>
+        <section>
+          <h3>2. Ansatz</h3>
+          <div>
+          <ul>
+            <li style="list-style-type: '&#8594; '; font-size:4vmin;">
+              Kürzester Pfad kann berechnet werden
+            </li>
+          </ul>
+        </div>
+          <div id="left">
+            <img src="images/polygons_cspace_grey.png" style="height:65vmin; margin-top:12vmin;" />
+          </div>
+          <div id="right">
+            <img src="images/cspace_path.png" style="height:80vmin;" />
+          </div>
+        </section>
+        <section>
+          <h3>2. Ansatz</h3>
+          <div style="width:100%; display: flex; font-size:4vmin;">
+            <div id="left">
+              <ul>
+                <li><b>Problem</b>
+                  <ul  style="list-style-type: '&#8594; '; font-size:3vmin;">
+                    <li>Speicherverbrauch (Raum LI27: 14.37m x 12.54m)</li>
+                    <li>Bei 2cm Auflösung: 450500 Knoten im Graph</li>
+                  </ul>
+                </li>
+              </ul>
+              <ul class="fragment" data-fragment-index="2">
+                <li><b>Lösung: Quadtree</b>
+                  <ul style="list-style-type: '&#8594; '; font-size:3vmin;">
+                    <li>Effiziente Datenstruktur</li>
+                    <li>Kompromiss zwischen Genauigkeit und Auflösung</li>
+                  </ul>
+                  <img src='images/Point_quadtree.svg' alt='Quadtree' style="height:50vmin; margin:auto;">
+                  <div style="font-size:2vmin;">https://de.wikipedia.org/wiki/Quadtree</div>
+                </li>
+              </ul>
+            </div>
+            <div id="right">
+              <ul class="fragment" data-fragment-index="3">
+                <li><b>Lösung: Sichtgraph</b>
+                  <ul style="list-style-type: '&#8594; '; font-size:3vmin;">
+                    <li>Graphknoten nur da wo sinnvoll</li>
+                    <li>Effizienter Graph, wenig Speicherverbauch</li>
+                  </ul>
+                  <img src='images/polygons_sight4.svg' alt='Sichtgraph' style="height:80vmin; margin:auto;">
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h3>Ansatz 2: Sichtgraph</h3>
+            <img src="images/polygons_sight41.svg" style="height:90vmin;">
+
+        </section>
+
+        <section>
+            <h3>Einschub: Konfigurationsraum</h3>
+            <div style="font-size:4vmin;">
+              <ul>
+                <li>Abbildung eines geometrischen Objekts vom Arbeitsraum auf einen Punkt im Konfigurationsraum</li>
+                <li>Ermöglicht Wegeplanung abhängig von der Drehung</li>
+                <li>Berechnung:</li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>Betrachtung der Obekte als Polygone</li>
+                <li>Berechnung der Summe</li>
+                <li>Erzeugen der konvexen Hülle der resulierenden Punkte</li>
+           </div>
+
+           <img src="images/cspace_subplot.svg" style="height:60vmin; margin:0;">
+        </section>
+        <section>
+          <h3>Ansatz 3: Mehrdimensionaler Konfigurationsraum</h3>
+            <img src="images/3d_cspace.svg">
+        </section>
+        <section>
+          <h3>Ansatz 3: Mehrdimensionaler Konfigurationsraum</h3>
+            <img src="images/3d_cspace1.svg">
+        </section>
+
+        <section>
+          <h3>Ansatz 3: Mehrdimensionaler Konfigurationsraum</h3>
+          <div style="height:5vmin;"></div>
+          <div id="left">
+            <div style="font-size:3vmin;">Mögliche Pfade im Konfigurationsraum</div>
+            <img src="images/3d_cspace_lines.svg" style="width:100%;">
+          </div>
+          <div id="right">
+            <div style="font-size:3vmin;">Pfad im Graph</div>
+            <img src="images/3d_cspace_graph.svg" style="width:100%;">
+
+          </div>
+        </section>
+        <section style="height:100%;">
+            <h3>Implementierung: Messaging Architektur</h3>
+            <img src="images/architektur.svg" style="height: 100vmin;">
+        </section>
+        <section>
+          <h3>Implementierung: Benutzeroberfläche</h3>
+          <div id="left">
+            <img src="images/screenshot_ui.png" style="margin-top:5vmin; width:80vmin;">
+
+          </div>
+          <div id="right" style="font-size:4vmin; margin-top:5vmin;">
+            <ul>
+              Darstellung
+              <ul>
+                <li>Position und Drehung des Rollstuhls</li>
+                <li>Beweungsvektoren des Rollstuhls</li>
+              </ul>
+              Steuerung
+              <ul>
+                <li><b>Linksklick</b>: Ziel</li>
+                <li>Taste <b>p</b>: Start Wegefindung</li>
+                <li>Taste <b>ESC</b>: Aktion abbrechen</li>
+              </ul>
+            <ul>
+          </div>
+        </section>
+        <section style="height:100%;">
+          <h3>Implementierung: Darstellung der Umgebung</h3>
+          <div>
+            <ul  style="font-size: 4vmin;">
+              <li>Hinderniskarte als .dxf Datei</li>
+              <li>Kann von gängigen CAD Programmen editiert werden</li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>LibreCAD, Menotor AutoCad, etc.</li>
+              </ul>
+            </ul>
+          </div>
+          <div id="left" style="margin-top:5vmin; font-size: 4vmin;">
+            <img src="images/librecad.png" style="height: 60vmin;">
+            <p style="font-size: 3vmin;">LibreCAD, Raum Li-27</p>
+          </div>
+          <div id="right" style="margin-top:10vmin; font-size: 4vmin;">
+            <ul>
+              <li>Hindernisse werden als Polygone abgespeichert, ezdxf</li>
+              <li>Berechnung des Konfigurationsraums auf Basis der Polygone</li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>Voraussetzung: Polygone sind konvex</li>
+              </ul>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <h3>Demonstration</h3>
+          <video controls autoplay>
+            <source data-src="video/demo.webm" type="video/webm" />
+          </video>
+        </section>
+        <section>
+          <h3>Zusammenfassung</h3>
+          <ul style="font-size:3vmin;">
+            <li>Verschiedene Ansätze zur Wegefindung verglichen</li>
+            <li>Implementierung der Algorithmen auf einem Raspberry Pi</li>
+            <li>Modularer Aufbau, IP-Netzwerk-basierte Architektur</li>
+            <li>Relalisierung einer webbasierten Benutzeroberfläche</li>
+            <li>Universelle Schnittstellen für zukünftige Erweiterungen</li>
+            <br />
+            <li><b>Probleme bei der Implementierung</b></li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>Laufzeit der Algorithmen auf komplexen Karten mit vielen Hindernissen, besonders beim 3. Ansatz</li>
+                <li>Numerische Genauigkeit bei der Berechnung der geometrischen Mathematik</li>
+              </ul>
+            <li><b>Ausblick</b></li>
+              <ul style="list-style-type: '&#8594; ';">
+                <li>"gleichförmigere" Bewegungen</li>
+                <li>Effiziente Implementierung der Wegefindung in Abhängigkeit der Drehrichtung</li>
+                <li>Kürzlich vorgestellt: Raspberry Pi 4</li>
+              </ul>
+            </ul>
+        </section>
+        <section>
+            <h3>Fragen?</h3>
+            <div style="height:50vmin;"></div>
+            <p style="font-size:4vmin; ">
+              Code:  <img src="images/github.png" style="height:5vmin; position:relative; top:20px;"> <a href="https://github.com/mlasch/projektarbeit_code">github.com/mlasch/projektarbeit_code</a>
+            </p>
+        </section>
 			</div>
 		</div>
     <script src="reveal.js/js/reveal.js"></script>
     <script>
       Reveal.initialize({ slideNumber: true,
+        width: "90%",
+      	height: "125%",
         hash: true,
+        transition: "none",
+        controls: false,
+        hideInactiveCursor: true,
         dependencies: [
       		// Interpret Markdown in <section> elements
       		{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
@@ -77,7 +379,8 @@
           { src: 'js/p5.min.js', async: true},
           { src: 'js/polygon.js', async: true},
           { src: 'js/polygon-cspace.js', async: true},
-          { src: 'js/polygon-triangulation.js', async: true}
+          { src: 'js/polygon-triangulation.js', async: true},
+          { src: 'reveal.js/plugin/title-footer/title-footer.js', async: true, callback: function() { title_footer.initialize(); } }
       	]
       });
     </script>
